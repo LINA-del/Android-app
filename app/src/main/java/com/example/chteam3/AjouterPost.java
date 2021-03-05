@@ -18,8 +18,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -108,6 +111,26 @@ public class AjouterPost extends AppCompatActivity {
                    Toast.makeText(AjouterPost.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                }
            });
+           DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+           connectedRef.addValueEventListener(new ValueEventListener() {
+               @Override
+               public void onDataChange(DataSnapshot snapshot) {
+                   boolean connected = snapshot.getValue(Boolean.class);
+                   if (connected) {
+                       System.out.println("connected");
+                   } else {
+                       System.out.println("not connected");
+                   }
+               }
+
+               @Override
+               public void onCancelled(DatabaseError error) {
+                   System.err.println("Listener was cancelled");
+               }
+           });
+
+
+
 
 
 
