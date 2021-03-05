@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "688521547759",
+    "project_id": "chteam-2c805",
+    "storage_bucket": "chteam-2c805.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688521547759:android:c537f8ebd0a7cf6024f01a",
+        "android_client_info": {
+          "package_name": "com.example.chteam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "688521547759-rs2eooud74iedaus30h3rtbm7locjhfu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5z8yUwE0WInPZyGeDn2w_Qzx7ya_kdOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "688521547759-rs2eooud74iedaus30h3rtbm7locjhfu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688521547759:android:4990cea07f68202f24f01a",
+        "android_client_info": {
+          "package_name": "com.example.chteam3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "688521547759-rs2eooud74iedaus30h3rtbm7locjhfu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5z8yUwE0WInPZyGeDn2w_Qzx7ya_kdOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "688521547759-rs2eooud74iedaus30h3rtbm7locjhfu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
