@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,16 +34,16 @@ import java.util.UUID;
 
 public class AjouterPost extends AppCompatActivity {
     private ImageButton addPost;
-    private static final int reponse_Gallerie =1 ;
-    Uri ImageUri = null ;
+    private static final int reponse_Gallerie = 1;
+    Uri ImageUri = null;
     private EditText title;
-    private  EditText description;
+    private EditText description;
     private Button submit;
-    private StorageReference myFirebaseStorage ;
+    private StorageReference myFirebaseStorage;
     private ProgressDialog Button_attente;
     //private DatabaseReference database;
     private FirebaseDatabase firstLine;
-    DatabaseReference database ;
+    DatabaseReference database;
 
 
     @Override
@@ -52,29 +53,27 @@ public class AjouterPost extends AppCompatActivity {
 
         //pour accéder à la bd il faut crée une instance , get reference (crée reference /dossier)
         // ici "Blog " c'est le dossier ou on va mettre les infos
-        firstLine= FirebaseDatabase.getInstance();
-        database= firstLine.getReference("Post");
+        firstLine = FirebaseDatabase.getInstance();
+        database = firstLine.getReference("Post");
 
 
+        Button_attente = new ProgressDialog(this);
 
+        title = (EditText) findViewById(R.id.editTextTextPersonName);
+        description = (EditText) findViewById(R.id.editTextTextPersonName2);
+        submit = (Button) findViewById(R.id.button);
 
-        Button_attente=new ProgressDialog(this);
-
-        title=(EditText)findViewById(R.id.editTextTextPersonName);
-        description=(EditText)findViewById(R.id.editTextTextPersonName2);
-        submit = (Button)findViewById(R.id.button);
-
-         // acces au stockage dans firebase
-        myFirebaseStorage= FirebaseStorage.getInstance().getReference();
-        addPost=(ImageButton)findViewById(R.id.imageView3);
+        // acces au stockage dans firebase
+        myFirebaseStorage = FirebaseStorage.getInstance().getReference();
+        addPost = (ImageButton) findViewById(R.id.imageView3);
         //Add Post Button View
-        addPost.setOnClickListener(new View.OnClickListener(){
+        addPost.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.setType("image/*");
                 //démarer selon le resultat de On ActivityResult
-                startActivityForResult(i,reponse_Gallerie);
+                startActivityForResult(i, reponse_Gallerie);
             }
         });
 
@@ -85,68 +84,62 @@ public class AjouterPost extends AppCompatActivity {
                 Poster();
             }
         });
-
-
     }
 
-    public void Poster(){
+    public void Poster() {
         //Affichage de progress
         Button_attente.setMessage("Start Posting");
         Button_attente.show();
 
         // recupere les valeurs depuis les deux champs d'edit text
-       String contenu_title = title.getText().toString().trim();
-       String contenu_descrip= description.getText().toString().trim();
-       if(!TextUtils.isEmpty(contenu_title)&& !TextUtils.isEmpty(contenu_descrip)&&ImageUri!=null){
+        String contenu_title = title.getText().toString().trim();
+        String contenu_descrip = description.getText().toString().trim();
+        if (!TextUtils.isEmpty(contenu_title) && !TextUtils.isEmpty(contenu_descrip) && ImageUri != null) {
+            Log.i("first if", "ok");
+            //PostImage : nom de dossier , getLastPathSegment(): retourne le nom de l'image
+            // mettre un nom aléatoire pour chaque nouvelle image pour ne pas les confondre
+            final String random_value = UUID.randomUUID().toString();
+            StorageReference Emplecement_fichier = myFirebaseStorage.child("PostImage").child(ImageUri.getLastPathSegment() + random_value);
+            Emplecement_fichier.putFile(ImageUri);
 
-           //PostImage : nom de dossier , getLastPathSegment(): retourne le nom de l'image
-           // mettre un nom aléatoire pour chaque nouvelle image pour ne pea sles confondre
-           final String random_value= UUID.randomUUID().toString();
-           StorageReference Emplecement_fichier = myFirebaseStorage.child("PostImage").child(ImageUri.getLastPathSegment()+random_value);
-           Emplecement_fichier.putFile(ImageUri);
+            database.setValue(contenu_title).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(AjouterPost.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+            connectedRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    boolean connected = snapshot.getValue(Boolean.class);
+                    if (connected) {
+                        //Au lieu de system.out.println j'ai mis Log
+                        Log.i("onDataChange", "Connected");
+                        //  System.out.println("connected");
+                    } else {
+                        Log.i("onDataChange", "Not connected");
+                        // System.out.println("not connected");
+                    }
+                }
 
-           database.setValue(contenu_title).addOnFailureListener(new OnFailureListener() {
-               @Override
-               public void onFailure(@NonNull Exception e) {
-                   Toast.makeText(AjouterPost.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-               }
-           });
-           DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-           connectedRef.addValueEventListener(new ValueEventListener() {
-               @Override
-               public void onDataChange(DataSnapshot snapshot) {
-                   boolean connected = snapshot.getValue(Boolean.class);
-                   if (connected) {
-                       System.out.println("connected");
-                   } else {
-                       System.out.println("not connected");
-                   }
-               }
-
-               @Override
-               public void onCancelled(DatabaseError error) {
-                   System.err.println("Listener was cancelled");
-               }
-           });
-
-
-
-
-
-
-       }
-
-
-
-
-
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    //pareil
+                    //System.err.println("Listener was cancelled");
+                    Log.i("onCancelled", "Listener was cancelled");
+                }
+            });
+        } else
+            Log.i("first if", "not ok");
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==reponse_Gallerie && resultCode==RESULT_OK){
+        if (requestCode == reponse_Gallerie && resultCode == RESULT_OK) {
             //puisque la donnée est retourne en format URI
-             ImageUri = data.getData();
+            ImageUri = data.getData();
             //poster l'image dans l'espace réservé
             addPost.setImageURI(ImageUri);
         }

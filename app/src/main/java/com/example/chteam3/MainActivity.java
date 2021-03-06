@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //récuperer le bouton add et setting depuis le fichier menuu.xml
-        getMenuInflater().inflate(R.menu.menuu,menu);
+        getMenuInflater().inflate(R.menu.menuu, menu);
 
 
         return super.onCreateOptionsMenu(menu);
@@ -30,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // si on clique sur le bouton add on demarre une nouvelle activité
 
-        if(item.getItemId() == R.id.action_add){
-           Intent i = new Intent(MainActivity.this,AjouterPost.class);
+        if (item.getItemId() == R.id.action_add) {
+            Intent i = new Intent(MainActivity.this, AjouterPost.class);
 
-                startActivity(i);}
+            startActivity(i);
+        }
 
         return super.onOptionsItemSelected(item);
 
